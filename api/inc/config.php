@@ -1,0 +1,9 @@
+<?php
+require("./classes/request.php");
+require("./classes/getDataByArea.php");
+require("./classes/getDataByFilters.php");
+require("./classes/rollingRequest.php");
+require("./classes/getMMSI.php");
+require("./classes/getName.php");
+#require("../config.inc.php");
+?>

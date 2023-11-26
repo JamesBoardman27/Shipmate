@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Shipmate</title>
+        <link rel="stylesheet" type="text/css" href="pageStyles.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    </head>
+    <body>
+        <header>
+          Shipmate
+          <p1 id="amountOfBoats">Total Number of Boats: <span id="totalBoatNum">Loading...</span> <span style="font-style: normal;">|</span> Boats Currently Displayed: <span id="currentBoatNum">Loading...</span></p1>
+          <div id="mapKey" onclick="showMapKey();">
+            <button id="keyLabel" style="font-size: 17px;">Boat Key
+            </button>
+            <div id="keyList">
+              <p1 class="keyItem" style="color:black;">Cargo</p1>
+              <p1 class="keyItem" style="color:purple;">Fishing</p1>
+              <p1 class="keyItem" style="color:darkgreen;">Passenger</p1>
+              <p1 class="keyItem" style="color:green;">Pleasure</p1>
+              <p1 class="keyItem" style="color:grey;">Special Craft</p1>
+              <p1 class="keyItem" style="color:orange;">Tanker</p1>
+              <p1 class="keyItem" style="color:red;">Wing on Ground</p1>
+              <p1 class="keyItem" style="color:pink;">Other</p1>
+            </div>
+          </div> 
+          <form class="search">
+            <input id="search" type="text" placeholder="Search..." name="search" autocomplete="off">
+            <button type="submit" onclick="getBoatDataByName(document.getElementById('search').value); return false;">Search</button>
+          </form>
+        </header>
+        <aside>
+
+            <h1 style="font-size:175%;">Filters</h1>
+
+            <div class="sidenav">
+
+            <div class="dropdown">
+
+              <h1 style="font-size:150%;">Ship type</h1>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Cargo" onclick="applyFilters('Cargo', 0)">
+                  Cargo
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Passenger" onclick="applyFilters('Passenger', 1)">
+                  Passengers
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Tanker" onclick="applyFilters('Tanker', 2)">
+                  Tankers
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Fishing" onclick="applyFilters('Fishing', 3)">
+                  Fishing
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Special Craft" onclick="applyFilters('Special Craft', 4)">
+                  Special
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Pleasure Craft" onclick="applyFilters('Pleasure Craft', 5)">
+                  Pleasure
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Wing in Grnd" onclick="applyFilters('Wing in Grnd', 6)">
+                  Wing on Ground
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="checkbox" checked="checked" id="Other" onclick="applyFilters('Other', 7)">
+                  Other
+                  <span class="checkmark"></span>
+                </label>
+
+              </div>
+
+              <div id="mapLayers">
+
+                <h1 style="font-size:150%;">Map Layer</h1>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="radio" id="default" name="mapLayer" value="tiles" onclick="changeLayer(this.value)" checked="checked">
+                  Default
+                  <span class="radio"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="radio" id="nautical" name="mapLayer" value="nautical" onclick="changeLayer(this.value)">
+                  Nautical
+                  <span class="radio"></span>
+                </label>
+
+                <label class="container" style="font-size:125%;">
+                  <input type="radio" id="satellite" name="mapLayer" value="satellite" onclick="changeLayer(this.value)">
+                  Satellite
+                  <span class="radio"></span>
+                </label>
+
+              </div>
+
+            </div>
+
+        </aside>
+        <main>
+            <div id="map" style="height: 554px;"></div>
+        </main>
+        <footer>
+            <form id="refreshMap">
+              <label>Latitude:</label>
+              <input type="text" placeholder="lat" name="lat" id="lat" class="refreshInput">
+              <label>Longitude:</label>
+              <input type="text" placeholder="long" name="long" id="long" class="refreshInput">
+              <label>Radius:</label>
+              <input type="text" placeholder="rad" name="rad" id="rad" class="refreshInput">
+              <button id="refreshButton" type="click" onclick="Refresh(document.getElementById('long').value,
+              document.getElementById('lat').value,
+              document.getElementById('rad').value); return false;"><strong>refresh</strong></button>
+          </form>
+        </footer>
+    </body>
+    <script src="map.js"></script>
+    <div id="overlay" onclick="removeOverlay()">
+      <h1>More Information</h1>
+      <img id="boatImage">
+      <p1 id="selectedBoatInfo"></p1>
+      <h3>Click anywhere to remove this overlay</h1>
+    </div>
+</html>
